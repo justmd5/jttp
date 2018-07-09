@@ -1,0 +1,22 @@
+{
+    "name": "justmd5/jttp",
+    "description": "Package description here.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "丁海军",
+            "email": "heyjun2012@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Justmd5\\Jttp\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.6",
+        "ext-curl": "*",
+        "ext-json": "*"
+    }
+}

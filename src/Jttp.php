@@ -4,21 +4,20 @@
  * File: Http.php
  * User: 丁海军
  * Date: 18/07/09
- * Time: 下午4:54
+ * Time: 下午4:54.
  */
+
 namespace Justmd5\Jttp;
 
 use Exception;
 
 /**
- * Class Http
- *
- * @package JGT\Http
+ * Class Http.
  */
 class Jttp
 {
     /**
-     * user agent
+     * user agent.
      *
      * @var string
      */
@@ -39,11 +38,13 @@ class Jttp
      *
      * @return string
      */
-    public static function request ($method, $url, $params = [], array $headers = [], $files = [])
+    public static function request($method, $url, $params = [], array $headers = [], $files = [])
     {
-        if (!function_exists('curl_init')) exit('Need to open the curl extension');
+        if (!function_exists('curl_init')) {
+            exit('Need to open the curl extension');
+        }
         $method = strtoupper($method);
-        $ci     = curl_init();
+        $ci = curl_init();
         curl_setopt($ci, CURLOPT_USERAGENT, static::$userAgent);
         curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, 6);
         curl_setopt($ci, CURLOPT_TIMEOUT, $files ? 30 : 3);
@@ -55,9 +56,9 @@ class Jttp
         is_array($headers) || $headers = [];
         $headers = is_array(static::$headers) ? array_merge(static::$headers, $headers) : $headers;
         if (!function_exists('curl_file_create')) {
-            function curl_file_create ($filename, $mime_type = '', $post_name = '')
+            function curl_file_create($filename, $mime_type = '', $post_name = '')
             {
-                return "@$filename;filename=" . ($post_name ?: basename($filename)) . ($mime_type ? ";type=$mime_type" : '');
+                return "@$filename;filename=".($post_name ?: basename($filename)).($mime_type ? ";type=$mime_type" : '');
             }
         }
         switch ($method) {
@@ -92,7 +93,7 @@ class Jttp
             case 'DELETE':
             case 'OPTIONS':
                 $method == 'GET' || curl_setopt($ci, CURLOPT_CUSTOMREQUEST, $method);
-                empty($params) or $url .= (strpos($url, '?') ? '&' : '?') . (is_array($params) ? http_build_query($params) : $params);
+                empty($params) or $url .= (strpos($url, '?') ? '&' : '?').(is_array($params) ? http_build_query($params) : $params);
                 break;
         }
         curl_setopt($ci, CURLINFO_HEADER_OUT, true);
@@ -101,7 +102,7 @@ class Jttp
         $response = curl_exec($ci);
         //发生错误
         if (curl_errno($ci) > 0) {
-            error_log("curl错误：" . curl_errno($ci) . ' : ' . curl_error($ci).'入参:' . json_encode(func_get_args(), JSON_UNESCAPED_UNICODE));
+            error_log('curl错误：'.curl_errno($ci).' : '.curl_error($ci).'入参:'.json_encode(func_get_args(), JSON_UNESCAPED_UNICODE));
         }
         curl_close($ci);
 
@@ -109,11 +110,11 @@ class Jttp
     }
 
     /**
-     * set user agent
+     * set user agent.
      *
      * @param string $userAgent
      */
-    public static function setUserAgent ($userAgent)
+    public static function setUserAgent($userAgent)
     {
         empty($userAgent) or static::$userAgent = $userAgent;
     }
@@ -121,24 +122,26 @@ class Jttp
     /**
      * @return string
      */
-    public static function getUserAgent ()
+    public static function getUserAgent()
     {
         return self::$userAgent;
     }
 
     /**
-     * set headers ['X-Served-By:something','X-Served-By'=>'otherSomething']
+     * set headers ['X-Served-By:something','X-Served-By'=>'otherSomething'].
      *
      * @param array $headers
      *
      * @return mixed
      */
-    public static function setHeaders ($headers)
+    public static function setHeaders($headers)
     {
-        if (!is_array($headers) || count($headers) <= 0) return false;
+        if (!is_array($headers) || count($headers) <= 0) {
+            return false;
+        }
         $useHeaders = [];
         array_walk($headers, function ($v, $k) use (&$useHeaders) {
-            $useHeaders[] = strpos($v, ':') !== false ? $v : $k . ":" . $v;
+            $useHeaders[] = strpos($v, ':') !== false ? $v : $k.':'.$v;
         });
         if (is_array(static::$headers) && count(static::$headers) > 0) {
             static::$headers = array_merge(static::$headers, $useHeaders);
@@ -150,21 +153,22 @@ class Jttp
     /**
      * @return mixed
      */
-    public static function getHeaders ()
+    public static function getHeaders()
     {
         return self::$headers;
     }
 
     /**
-     * static call
+     * static call.
      *
      * @param string $method request method.
      * @param array  $args   request params.
      *
-     * @return mixed
      * @throws Exception
+     *
+     * @return mixed
      */
-    public static function __callStatic ($method, $args)
+    public static function __callStatic($method, $args)
     {
         $method = strtoupper($method);
         if (!in_array($method, [

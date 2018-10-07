@@ -44,7 +44,7 @@ class Jttp
             exit('Need to open the curl extension');
         }
         $method = strtoupper($method);
-        $ci     = curl_init();
+        $ci = curl_init();
         curl_setopt($ci, CURLOPT_USERAGENT, $this->userAgent);
         curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, 6);
         curl_setopt($ci, CURLOPT_TIMEOUT, $files ? 30 : 3);
@@ -58,7 +58,7 @@ class Jttp
         if (!function_exists('curl_file_create')) {
             function curl_file_create($filename, $mime_type = '', $post_name = '')
             {
-                return "@$filename;filename=" . ($post_name ?: basename($filename)) . ($mime_type ? ";type=$mime_type" : '');
+                return "@$filename;filename=".($post_name ?: basename($filename)).($mime_type ? ";type=$mime_type" : '');
             }
         }
         switch ($method) {
@@ -93,7 +93,7 @@ class Jttp
             case 'DELETE':
             case 'OPTIONS':
                 $method == 'GET' || curl_setopt($ci, CURLOPT_CUSTOMREQUEST, $method);
-                empty($params) or $url .= (strpos($url, '?') ? '&' : '?') . (is_array($params) ? http_build_query($params) : $params);
+                empty($params) or $url .= (strpos($url, '?') ? '&' : '?').(is_array($params) ? http_build_query($params) : $params);
                 break;
         }
         curl_setopt($ci, CURLINFO_HEADER_OUT, true);
@@ -102,7 +102,7 @@ class Jttp
         $response = curl_exec($ci);
         //发生错误
         if (curl_errno($ci) > 0) {
-            error_log('curl错误：' . curl_errno($ci) . ' : ' . curl_error($ci) . '入参:' . json_encode(func_get_args(), JSON_UNESCAPED_UNICODE));
+            error_log('curl错误：'.curl_errno($ci).' : '.curl_error($ci).'入参:'.json_encode(func_get_args(), JSON_UNESCAPED_UNICODE));
         }
         curl_close($ci);
 
@@ -145,7 +145,7 @@ class Jttp
         }
         $useHeaders = [];
         array_walk($headers, function ($v, $k) use (&$useHeaders) {
-            $useHeaders[] = strpos($v, ':') !== false ? $v : $k . ':' . $v;
+            $useHeaders[] = strpos($v, ':') !== false ? $v : $k.':'.$v;
         });
         if (is_array($this->headers) && count($this->headers) > 0) {
             $this->headers = array_merge($this->headers, $useHeaders);
@@ -171,6 +171,7 @@ class Jttp
      * @param array  $args   request params.
      *
      * @throws Exception
+     *
      * @return mixed
      */
     public static function __callStatic($method, $args)
